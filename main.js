@@ -1,69 +1,90 @@
-const numbersDisplay = document.getElementById('numbers-display');
-const generateButton = document.getElementById('generate-button');
-const themeSwitch = document.getElementById('theme-switch');
+import * as THREE from 'three';
 
-// 로또 번호에 따른 색상 클래스를 반환하는 함수
-function getColorClass(number) {
-    if (number <= 10) return 'color-1';
-    if (number <= 20) return 'color-2';
-    if (number <= 30) return 'color-3';
-    if (number <= 40) return 'color-4';
-    return 'color-5';
-}
+// 1. 기본 설정 (Scene, Camera, Renderer)
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x87ceeb); // 하늘색 배경
 
-// 6개의 고유한 로또 번호를 생성하는 함수
-function generateNumbers() {
-    const numbers = new Set();
-    while (numbers.size < 6) {
-        const randomNumber = Math.floor(Math.random() * 45) + 1;
-        numbers.add(randomNumber);
-    }
-    return Array.from(numbers).sort((a, b) => a - b);
-}
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 5, 10); // 카메라 위치 조정
+camera.lookAt(0, 0, 0);
 
-// 생성된 번호를 화면에 표시하는 함수
-function displayNumbers(numbers) {
-    numbersDisplay.innerHTML = '';
-    for (const number of numbers) {
-        const numberCircle = document.createElement('div');
-        numberCircle.classList.add('number-circle');
-        numberCircle.classList.add(getColorClass(number)); // 색상 클래스 추가
-        numberCircle.textContent = number;
-        numbersDisplay.appendChild(numberCircle);
-    }
-}
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-// 번호 생성 버튼 이벤트 리스너
-generateButton.addEventListener('click', () => {
-    const generatedNumbers = generateNumbers();
-    displayNumbers(generatedNumbers);
+// 2. 조명 설정 (현실감을 더하기 위해)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // 전체적으로 부드러운 빛
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+ directionalLight.position.set(5, 10, 7.5);
+scene.add(directionalLight);
+
+// 3. 월드(땅) 생성
+const groundGeometry = new THREE.PlaneGeometry(100, 100);
+const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x228b22 }); // 녹색 땅
+const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+ground.rotation.x = -Math.PI / 2; // 땅을 눕힘
+scene.add(ground);
+
+// 4. 플레이어 캐릭터 생성
+const playerGeometry = new THREE.BoxGeometry(1, 2, 1); // 세로로 긴 상자 모양
+const playerMaterial = new THREE.MeshStandardMaterial({ color: 0xff4500 }); // 주황색
+const player = new THREE.Mesh(playerGeometry, playerMaterial);
+player.position.y = 1; // 땅 위에 서 있도록 위치 조정
+scene.add(player);
+
+// 5. 키보드 입력 처리
+const keys = {};
+document.addEventListener('keydown', (event) => {
+    keys[event.code] = true;
+});
+document.addEventListener('keyup', (event) => {
+    keys[event.code] = false;
 });
 
-// --- 테마 전환 로직 ---
-const THEME_KEY = 'lotto_theme';
+const moveSpeed = 0.1;
+const playerVelocity = new THREE.Vector3(); // 플레이어의 이동 속도를 관리
 
-// 테마를 적용하고 localStorage에 저장하는 함수
-function applyTheme() {
-    if (themeSwitch.checked) {
-        document.body.classList.add('dark-mode');
-        localStorage.setItem(THEME_KEY, 'dark');
-    } else {
-        document.body.classList.remove('dark-mode');
-        localStorage.setItem(THEME_KEY, 'light');
+function updatePlayerMovement() {
+    playerVelocity.set(0, 0, 0);
+
+    if (keys['KeyW']) {
+        playerVelocity.z = -moveSpeed;
     }
+    if (keys['KeyS']) {
+        playerVelocity.z = moveSpeed;
+    }
+    if (keys['KeyA']) {
+        playerVelocity.x = -moveSpeed;
+    }
+    if (keys['KeyD']) {
+        playerVelocity.x = moveSpeed;
+    }
+
+    player.position.add(playerVelocity); // 계산된 속도를 위치에 더함
 }
 
-// 테마 스위치 변경 이벤트 리스너
-themeSwitch.addEventListener('change', applyTheme);
+// 6. 게임 루프 (애니메이션)
+function animate() {
+    requestAnimationFrame(animate);
 
-// 페이지 로드 시 저장된 테마를 확인하고 적용
-function loadTheme() {
-    const savedTheme = localStorage.getItem(THEME_KEY);
-    if (savedTheme === 'dark') {
-        themeSwitch.checked = true;
-    }
-    applyTheme();
+    updatePlayerMovement();
+
+    // 플레이어를 따라다니는 카메라 (간단한 3인칭 시점)
+    const cameraOffset = new THREE.Vector3(0, 5, 10);
+    camera.position.copy(player.position).add(cameraOffset);
+    camera.lookAt(player.position);
+
+    renderer.render(scene, camera);
 }
 
-// 페이지가 로드되면 테마 적용
-loadTheme();
+// 7. 창 크기 조절 시 렌더러와 카메라 업데이트
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// 애니메이션 루프 시작
+animate();

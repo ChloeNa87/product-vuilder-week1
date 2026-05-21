@@ -3,33 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Generator</title>
+    <title>3D Character Controller</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- 테마 전환 토글 스위치 -->
-    <div id="theme-toggle">
-        <label class="switch">
-            <input type="checkbox" id="theme-switch">
-            <span class="slider"></span>
-        </label>
-    </div>
-
-    <div id="lotto-container">
-        <h1>Lotto Number Generator</h1>
-        <div id="numbers-display">
-            <!-- 번호 생성 전 초기 상태 -->
-            <div class="number-circle">?</div>
-            <div class="number-circle">?</div>
-            <div class="number-circle">?</div>
-            <div class="number-circle">?</div>
-            <div class="number-circle">?</div>
-            <div class="number-circle">?</div>
-        </div>
-        <button id="generate-button">Generate Numbers</button>
-    </div>
-
-    <script src="main.js"></script>
+    <!-- Three.js가 렌더링할 캔버스 -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+            }
+        }
+    </script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
