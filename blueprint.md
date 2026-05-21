@@ -1,28 +1,30 @@
-# Project Overview
+# 로또 번호 생성기 프로젝트
 
-This project is a simple web-based lottery number generator. It will generate and display 6 unique random numbers.
+## 개요
 
-# Current Implementation
+이 프로젝트는 사용자를 위해 1부터 45까지의 숫자 중에서 6개의 고유한 로또 번호를 생성하는 간단한 웹 애플리케이션입니다. 현대적인 웹 표준 기술(HTML, CSS, JavaScript)을 사용하여 구축되었으며, 깔끔하고 직관적인 사용자 경험을 제공하는 것을 목표로 합니다.
 
-*   **HTML (`index.html`):** Basic HTML structure.
-*   **CSS (`style.css`):** Minimal styling.
-*   **JavaScript (`main.js`):** Minimal JavaScript.
+## 주요 기능 및 디자인
 
-# Plan for Lotto Number Generator
+### 현재 구현된 기능
 
-1.  **Modify `index.html`:**
-    *   Update the title to "Lotto Number Generator".
-    *   Create a container `div` with the id `lotto-container`.
-    *   Create a button with the id `generate-button` to generate numbers.
+*   **번호 생성**: 버튼 클릭 시 중복되지 않는 6개의 랜덤 로또 번호를 생성합니다.
+*   **중앙 정렬 레이아웃**: 모든 UI 요소가 화면 중앙에 배치되어 있어 시각적으로 안정감을 줍니다.
+*   **부드러운 배경**: 몸 전체에 미묘한 노이즈 질감과 부드러운 방사형 그라데이션을 적용하여 촉각적이고 고급스러운 느낌을 줍니다.
+*   **입체적인 카드 UI**: 생성된 번호가 표시되는 영역은 부드럽고 깊은 그림자 효과를 주어 "떠 있는" 느낌을 강조합니다.
+*   **GitHub Pages 배포**: `main` 브랜치에 푸시하면 자동으로 웹사이트가 업데이트됩니다.
 
-2.  **Modify `style.css`:**
-    *   Add styles for the main container, the lotto number display, and the button.
-    *   Use a modern and clean design.
-    *   Make it responsive.
+### 현재 요청된 변경 사항 (Plan)
 
-3.  **Modify `main.js`:**
-    *   Create a function `generateNumbers` that:
-        *   Generates an array of 6 unique random integers between 1 and 45.
-        *   Sorts the numbers in ascending order.
-    *   Create a function `displayNumbers` that takes the array of numbers and displays them in the `lotto-container`.
-    *   Add a click event listener to the `generate-button` that calls `generateNumbers` and then `displayNumbers`.
+1.  **색상별 로또 번호**: 생성된 각 번호에 대해 값의 범위에 따라 다른 배경색을 적용하여 시각적 구분을 더합니다.
+    *   1-10: 노란색 계열
+    *   11-20: 파란색 계열
+    *   21-30: 빨간색 계열
+    *   31-40: 회색 계열
+    *   41-45: 초록색 계열
+2.  **테마 전환 기능 (다크/라이트 모드)**:
+    *   사용자가 앱의 색상 테마를 라이트 모드와 다크 모드 사이에서 전환할 수 있는 토글 스위치를 추가합니다.
+    *   CSS 변수를 사용하여 두 테마의 색상을 관리합니다.
+    *   사용자의 선택은 브라우저의 `localStorage`에 저장되어 다음 방문 시에도 유지됩니다.
+3.  **GitHub 배포**: 모든 기능 구현이 완료된 후, 변경 사항을 GitHub 저장소에 푸시하여 라이브 웹사이트에 즉시 반영합니다.
+
